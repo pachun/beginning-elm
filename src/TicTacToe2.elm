@@ -95,116 +95,44 @@ turn ticTacToeBoard =
         O
 
 
+updateBoardSquareValue : BoardSquareValue -> TicTacToeBoard -> TicTacToeBoard -> TicTacToeBoard
+updateBoardSquareValue currentBoardSquareValue ticTacToeBoardWithChange ticTacToeBoardWithoutChange =
+    if winner ticTacToeBoardWithoutChange == Empty && currentBoardSquareValue == Empty then
+        ticTacToeBoardWithChange
+
+    else
+        ticTacToeBoardWithoutChange
+
+
 update : Action -> TicTacToeBoard -> TicTacToeBoard
 update turnAction ticTacToeBoard =
     case turnAction of
         ClickedTopLeft ->
-            if
-                winner ticTacToeBoard
-                    == Empty
-                    && .topLeft ticTacToeBoard
-                    == Empty
-            then
-                { ticTacToeBoard | topLeft = turn ticTacToeBoard }
-
-            else
-                ticTacToeBoard
+            updateBoardSquareValue ticTacToeBoard.topLeft { ticTacToeBoard | topLeft = turn ticTacToeBoard } ticTacToeBoard
 
         ClickedTopMiddle ->
-            if
-                winner ticTacToeBoard
-                    == Empty
-                    && .topMiddle ticTacToeBoard
-                    == Empty
-            then
-                { ticTacToeBoard | topMiddle = turn ticTacToeBoard }
-
-            else
-                ticTacToeBoard
+            updateBoardSquareValue ticTacToeBoard.topMiddle { ticTacToeBoard | topMiddle = turn ticTacToeBoard } ticTacToeBoard
 
         ClickedTopRight ->
-            if
-                winner ticTacToeBoard
-                    == Empty
-                    && .topRight ticTacToeBoard
-                    == Empty
-            then
-                { ticTacToeBoard | topRight = turn ticTacToeBoard }
-
-            else
-                ticTacToeBoard
+            updateBoardSquareValue ticTacToeBoard.topRight { ticTacToeBoard | topRight = turn ticTacToeBoard } ticTacToeBoard
 
         ClickedMiddleLeft ->
-            if
-                winner ticTacToeBoard
-                    == Empty
-                    && .middleLeft ticTacToeBoard
-                    == Empty
-            then
-                { ticTacToeBoard | middleLeft = turn ticTacToeBoard }
-
-            else
-                ticTacToeBoard
+            updateBoardSquareValue ticTacToeBoard.middleLeft { ticTacToeBoard | middleLeft = turn ticTacToeBoard } ticTacToeBoard
 
         ClickedMiddle ->
-            if
-                winner ticTacToeBoard
-                    == Empty
-                    && .middle ticTacToeBoard
-                    == Empty
-            then
-                { ticTacToeBoard | middle = turn ticTacToeBoard }
-
-            else
-                ticTacToeBoard
+            updateBoardSquareValue ticTacToeBoard.middle { ticTacToeBoard | middle = turn ticTacToeBoard } ticTacToeBoard
 
         ClickedMiddleRight ->
-            if
-                winner ticTacToeBoard
-                    == Empty
-                    && .middleRight ticTacToeBoard
-                    == Empty
-            then
-                { ticTacToeBoard | middleRight = turn ticTacToeBoard }
-
-            else
-                ticTacToeBoard
+            updateBoardSquareValue ticTacToeBoard.middleRight { ticTacToeBoard | middleRight = turn ticTacToeBoard } ticTacToeBoard
 
         ClickedBottomLeft ->
-            if
-                winner ticTacToeBoard
-                    == Empty
-                    && .bottomLeft ticTacToeBoard
-                    == Empty
-            then
-                { ticTacToeBoard | bottomLeft = turn ticTacToeBoard }
-
-            else
-                ticTacToeBoard
+            updateBoardSquareValue ticTacToeBoard.bottomLeft { ticTacToeBoard | bottomLeft = turn ticTacToeBoard } ticTacToeBoard
 
         ClickedBottomMiddle ->
-            if
-                winner ticTacToeBoard
-                    == Empty
-                    && .bottomMiddle ticTacToeBoard
-                    == Empty
-            then
-                { ticTacToeBoard | bottomMiddle = turn ticTacToeBoard }
-
-            else
-                ticTacToeBoard
+            updateBoardSquareValue ticTacToeBoard.bottomMiddle { ticTacToeBoard | bottomMiddle = turn ticTacToeBoard } ticTacToeBoard
 
         ClickedBottomRight ->
-            if
-                winner ticTacToeBoard
-                    == Empty
-                    && .bottomRight ticTacToeBoard
-                    == Empty
-            then
-                { ticTacToeBoard | bottomRight = turn ticTacToeBoard }
-
-            else
-                ticTacToeBoard
+            updateBoardSquareValue ticTacToeBoard.bottomRight { ticTacToeBoard | bottomRight = turn ticTacToeBoard } ticTacToeBoard
 
         ClickedReset ->
             emptyTicTacToeBoard
