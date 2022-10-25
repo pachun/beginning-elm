@@ -10,44 +10,44 @@ import Html.Events exposing (onClick)
 -- MAIN
 
 
-main : Program () TicTacToeBoard Action
+main : Program () Board BrowserInteraction
 main =
-    Browser.sandbox { init = emptyTicTacToeBoard, update = update, view = view }
+    Browser.sandbox { init = emptyBoard, update = updateBoard, view = board }
 
 
 
 -- MODEL
 
 
-type BoardSquareValue
+type BoardSquare
     = X
     | O
     | Empty
 
 
-type alias TicTacToeBoard =
-    { topLeft : BoardSquareValue
-    , topMiddle : BoardSquareValue
-    , topRight : BoardSquareValue
-    , middleLeft : BoardSquareValue
-    , middle : BoardSquareValue
-    , middleRight : BoardSquareValue
-    , bottomLeft : BoardSquareValue
-    , bottomMiddle : BoardSquareValue
-    , bottomRight : BoardSquareValue
+type alias Board =
+    { topLeft : BoardSquare
+    , topMiddle : BoardSquare
+    , topRight : BoardSquare
+    , middleLeft : BoardSquare
+    , middle : BoardSquare
+    , middleRight : BoardSquare
+    , bottomLeft : BoardSquare
+    , bottomMiddle : BoardSquare
+    , bottomRight : BoardSquare
     }
 
 
-emptyTicTacToeBoard : TicTacToeBoard
-emptyTicTacToeBoard =
-    TicTacToeBoard Empty Empty Empty Empty Empty Empty Empty Empty Empty
+emptyBoard : Board
+emptyBoard =
+    Board Empty Empty Empty Empty Empty Empty Empty Empty Empty
 
 
 
 -- UPDATE
 
 
-type Action
+type BrowserInteraction
     = ClickedTopLeft
     | ClickedTopMiddle
     | ClickedTopRight
@@ -60,7 +60,41 @@ type Action
     | ClickedReset
 
 
-turn : TicTacToeBoard -> BoardSquareValue
+updateBoard : BrowserInteraction -> Board -> Board
+updateBoard browserInteraction ticTacToeBoard =
+    case browserInteraction of
+        ClickedTopLeft ->
+            updateBoardSquare ticTacToeBoard.topLeft { ticTacToeBoard | topLeft = turn ticTacToeBoard } ticTacToeBoard
+
+        ClickedTopMiddle ->
+            updateBoardSquare ticTacToeBoard.topMiddle { ticTacToeBoard | topMiddle = turn ticTacToeBoard } ticTacToeBoard
+
+        ClickedTopRight ->
+            updateBoardSquare ticTacToeBoard.topRight { ticTacToeBoard | topRight = turn ticTacToeBoard } ticTacToeBoard
+
+        ClickedMiddleLeft ->
+            updateBoardSquare ticTacToeBoard.middleLeft { ticTacToeBoard | middleLeft = turn ticTacToeBoard } ticTacToeBoard
+
+        ClickedMiddle ->
+            updateBoardSquare ticTacToeBoard.middle { ticTacToeBoard | middle = turn ticTacToeBoard } ticTacToeBoard
+
+        ClickedMiddleRight ->
+            updateBoardSquare ticTacToeBoard.middleRight { ticTacToeBoard | middleRight = turn ticTacToeBoard } ticTacToeBoard
+
+        ClickedBottomLeft ->
+            updateBoardSquare ticTacToeBoard.bottomLeft { ticTacToeBoard | bottomLeft = turn ticTacToeBoard } ticTacToeBoard
+
+        ClickedBottomMiddle ->
+            updateBoardSquare ticTacToeBoard.bottomMiddle { ticTacToeBoard | bottomMiddle = turn ticTacToeBoard } ticTacToeBoard
+
+        ClickedBottomRight ->
+            updateBoardSquare ticTacToeBoard.bottomRight { ticTacToeBoard | bottomRight = turn ticTacToeBoard } ticTacToeBoard
+
+        ClickedReset ->
+            emptyBoard
+
+
+turn : Board -> BoardSquare
 turn ticTacToeBoard =
     let
         boardSquareValues =
@@ -95,50 +129,16 @@ turn ticTacToeBoard =
         O
 
 
-updateBoardSquareValue : BoardSquareValue -> TicTacToeBoard -> TicTacToeBoard -> TicTacToeBoard
-updateBoardSquareValue currentBoardSquareValue ticTacToeBoardWithChange ticTacToeBoardWithoutChange =
-    if winner ticTacToeBoardWithoutChange == Empty && currentBoardSquareValue == Empty then
+updateBoardSquare : BoardSquare -> Board -> Board -> Board
+updateBoardSquare currentBoardSquare ticTacToeBoardWithChange ticTacToeBoardWithoutChange =
+    if winner ticTacToeBoardWithoutChange == Empty && currentBoardSquare == Empty then
         ticTacToeBoardWithChange
 
     else
         ticTacToeBoardWithoutChange
 
 
-update : Action -> TicTacToeBoard -> TicTacToeBoard
-update turnAction ticTacToeBoard =
-    case turnAction of
-        ClickedTopLeft ->
-            updateBoardSquareValue ticTacToeBoard.topLeft { ticTacToeBoard | topLeft = turn ticTacToeBoard } ticTacToeBoard
-
-        ClickedTopMiddle ->
-            updateBoardSquareValue ticTacToeBoard.topMiddle { ticTacToeBoard | topMiddle = turn ticTacToeBoard } ticTacToeBoard
-
-        ClickedTopRight ->
-            updateBoardSquareValue ticTacToeBoard.topRight { ticTacToeBoard | topRight = turn ticTacToeBoard } ticTacToeBoard
-
-        ClickedMiddleLeft ->
-            updateBoardSquareValue ticTacToeBoard.middleLeft { ticTacToeBoard | middleLeft = turn ticTacToeBoard } ticTacToeBoard
-
-        ClickedMiddle ->
-            updateBoardSquareValue ticTacToeBoard.middle { ticTacToeBoard | middle = turn ticTacToeBoard } ticTacToeBoard
-
-        ClickedMiddleRight ->
-            updateBoardSquareValue ticTacToeBoard.middleRight { ticTacToeBoard | middleRight = turn ticTacToeBoard } ticTacToeBoard
-
-        ClickedBottomLeft ->
-            updateBoardSquareValue ticTacToeBoard.bottomLeft { ticTacToeBoard | bottomLeft = turn ticTacToeBoard } ticTacToeBoard
-
-        ClickedBottomMiddle ->
-            updateBoardSquareValue ticTacToeBoard.bottomMiddle { ticTacToeBoard | bottomMiddle = turn ticTacToeBoard } ticTacToeBoard
-
-        ClickedBottomRight ->
-            updateBoardSquareValue ticTacToeBoard.bottomRight { ticTacToeBoard | bottomRight = turn ticTacToeBoard } ticTacToeBoard
-
-        ClickedReset ->
-            emptyTicTacToeBoard
-
-
-winner : TicTacToeBoard -> BoardSquareValue
+winner : Board -> BoardSquare
 winner ticTacToeBoard =
     let
         hasTopRowWinner =
@@ -237,8 +237,8 @@ winner ticTacToeBoard =
 -- VIEW
 
 
-boardSquareValue : BoardSquareValue -> String
-boardSquareValue value =
+boardSquareAsString : BoardSquare -> String
+boardSquareAsString value =
     case value of
         X ->
             "X"
@@ -250,8 +250,8 @@ boardSquareValue value =
             ""
 
 
-boardSquareHtml : Action -> (TicTacToeBoard -> BoardSquareValue) -> TicTacToeBoard -> Html Action
-boardSquareHtml action cellPosition ticTacToeBoard =
+boardSquareHtml : BrowserInteraction -> (Board -> BoardSquare) -> Board -> Html BrowserInteraction
+boardSquareHtml action boardSquare ticTacToeBoard =
     Html.td
         [ style "border" "1px solid #000"
         , style "border-collapse" "collapse"
@@ -265,13 +265,13 @@ boardSquareHtml action cellPosition ticTacToeBoard =
             ]
             [ Html.span
                 [ style "font-size" "30pt" ]
-                [ ticTacToeBoard |> cellPosition |> boardSquareValue |> Html.text ]
+                [ ticTacToeBoard |> boardSquare |> boardSquareAsString |> Html.text ]
             ]
         ]
 
 
-view : TicTacToeBoard -> Html Action
-view ticTacToeBoard =
+board : Board -> Html BrowserInteraction
+board ticTacToeBoard =
     Html.div []
         [ Html.table [ style "border" "1px solid #000", style "border-collapse" "collapse" ]
             [ Html.tr []
