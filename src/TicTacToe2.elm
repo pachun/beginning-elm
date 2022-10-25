@@ -138,7 +138,11 @@ updateBoardSquare currentBoardSquare ticTacToeBoardWithChange ticTacToeBoardWith
         ticTacToeBoardWithoutChange
 
 
-winner : Board -> BoardSquare
+type alias Winner =
+    BoardSquare
+
+
+winner : Board -> Winner
 winner ticTacToeBoard =
     let
         hasTopRowWinner =
