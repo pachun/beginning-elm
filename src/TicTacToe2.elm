@@ -284,7 +284,7 @@ winner ticTacToeBoard =
         ticTacToeBoard.middleLeft
 
     else if bottomRowWinner then
-        ticTacToeBoard.middleLeft
+        ticTacToeBoard.bottomLeft
 
     else if leftColumnWinner then
         ticTacToeBoard.topLeft
@@ -322,159 +322,44 @@ boardSquareValue value =
             ""
 
 
+boardSquareHtml : Action -> (TicTacToeBoard -> BoardSquareValue) -> TicTacToeBoard -> Html Action
+boardSquareHtml action cellPosition ticTacToeBoard =
+    Html.td
+        [ style "border" "1px solid #000"
+        , style "border-collapse" "collapse"
+        ]
+        [ Html.button
+            [ style "width" "100px"
+            , style "height" "100px"
+            , style "background" "none"
+            , style "border" "none"
+            , onClick action
+            ]
+            [ Html.span
+                [ style "font-size" "30pt" ]
+                [ ticTacToeBoard |> cellPosition |> boardSquareValue |> Html.text ]
+            ]
+        ]
+
+
 view : TicTacToeBoard -> Html Action
 view ticTacToeBoard =
     Html.div []
         [ Html.table [ style "border" "1px solid #000", style "border-collapse" "collapse" ]
             [ Html.tr []
-                [ Html.td
-                    [ style "border" "1px solid #000"
-                    , style "border-collapse" "collapse"
-                    ]
-                    [ Html.button
-                        [ style "width" "100px"
-                        , style "height" "100px"
-                        , style "background" "none"
-                        , style "border" "none"
-                        , onClick ClickedTopLeft
-                        ]
-                        [ Html.span
-                            [ style "font-size" "30pt" ]
-                            [ ticTacToeBoard |> .topLeft |> boardSquareValue |> Html.text ]
-                        ]
-                    ]
-                , Html.td
-                    [ style "border" "1px solid #000"
-                    , style "border-collapse" "collapse"
-                    ]
-                    [ Html.button
-                        [ style "width" "100px"
-                        , style "height" "100px"
-                        , style "background" "none"
-                        , style "border" "none"
-                        , onClick ClickedTopMiddle
-                        ]
-                        [ Html.span
-                            [ style "font-size" "30pt" ]
-                            [ ticTacToeBoard |> .topMiddle |> boardSquareValue |> Html.text ]
-                        ]
-                    ]
-                , Html.td
-                    [ style "border" "1px solid #000"
-                    , style "border-collapse" "collapse"
-                    ]
-                    [ Html.button
-                        [ style "width" "100px"
-                        , style "height" "100px"
-                        , style "background" "none"
-                        , style "border" "none"
-                        , onClick ClickedTopRight
-                        ]
-                        [ Html.span
-                            [ style "font-size" "30pt" ]
-                            [ ticTacToeBoard |> .topRight |> boardSquareValue |> Html.text ]
-                        ]
-                    ]
+                [ boardSquareHtml ClickedTopLeft .topLeft ticTacToeBoard
+                , boardSquareHtml ClickedTopMiddle .topMiddle ticTacToeBoard
+                , boardSquareHtml ClickedTopRight .topRight ticTacToeBoard
                 ]
             , Html.tr []
-                [ Html.td
-                    [ style "border" "1px solid #000"
-                    , style "border-collapse" "collapse"
-                    ]
-                    [ Html.button
-                        [ style "width" "100px"
-                        , style "height" "100px"
-                        , style "background" "none"
-                        , style "border" "none"
-                        , onClick ClickedMiddleLeft
-                        ]
-                        [ Html.span
-                            [ style "font-size" "30pt" ]
-                            [ ticTacToeBoard |> .middleLeft |> boardSquareValue |> Html.text ]
-                        ]
-                    ]
-                , Html.td
-                    [ style "border" "1px solid #000"
-                    , style "border-collapse" "collapse"
-                    ]
-                    [ Html.button
-                        [ style "width" "100px"
-                        , style "height" "100px"
-                        , style "background" "none"
-                        , style "border" "none"
-                        , onClick ClickedMiddle
-                        ]
-                        [ Html.span
-                            [ style "font-size" "30pt" ]
-                            [ ticTacToeBoard |> .middle |> boardSquareValue |> Html.text ]
-                        ]
-                    ]
-                , Html.td
-                    [ style "border" "1px solid #000"
-                    , style "border-collapse" "collapse"
-                    ]
-                    [ Html.button
-                        [ style "width" "100px"
-                        , style "height" "100px"
-                        , style "background" "none"
-                        , style "border" "none"
-                        , onClick ClickedMiddleRight
-                        ]
-                        [ Html.span
-                            [ style "font-size" "30pt" ]
-                            [ ticTacToeBoard |> .middleRight |> boardSquareValue |> Html.text ]
-                        ]
-                    ]
+                [ boardSquareHtml ClickedMiddleLeft .middleLeft ticTacToeBoard
+                , boardSquareHtml ClickedMiddle .middle ticTacToeBoard
+                , boardSquareHtml ClickedMiddleRight .middleRight ticTacToeBoard
                 ]
             , Html.tr []
-                [ Html.td
-                    [ style "border" "1px solid #000"
-                    , style "border-collapse" "collapse"
-                    ]
-                    [ Html.button
-                        [ style "width" "100px"
-                        , style "height" "100px"
-                        , style "background" "none"
-                        , style "border" "none"
-                        , onClick ClickedBottomLeft
-                        ]
-                        [ Html.span
-                            [ style "font-size" "30pt" ]
-                            [ ticTacToeBoard |> .bottomLeft |> boardSquareValue |> Html.text ]
-                        ]
-                    ]
-                , Html.td
-                    [ style "border" "1px solid #000"
-                    , style "border-collapse" "collapse"
-                    ]
-                    [ Html.button
-                        [ style "width" "100px"
-                        , style "height" "100px"
-                        , style "background" "none"
-                        , style "border" "none"
-                        , onClick ClickedBottomMiddle
-                        ]
-                        [ Html.span
-                            [ style "font-size" "30pt" ]
-                            [ ticTacToeBoard |> .bottomMiddle |> boardSquareValue |> Html.text ]
-                        ]
-                    ]
-                , Html.td
-                    [ style "border" "1px solid #000"
-                    , style "border-collapse" "collapse"
-                    ]
-                    [ Html.button
-                        [ style "width" "100px"
-                        , style "height" "100px"
-                        , style "background" "none"
-                        , style "border" "none"
-                        , onClick ClickedBottomRight
-                        ]
-                        [ Html.span
-                            [ style "font-size" "30pt" ]
-                            [ ticTacToeBoard |> .bottomRight |> boardSquareValue |> Html.text ]
-                        ]
-                    ]
+                [ boardSquareHtml ClickedBottomLeft .bottomLeft ticTacToeBoard
+                , boardSquareHtml ClickedBottomMiddle .bottomMiddle ticTacToeBoard
+                , boardSquareHtml ClickedBottomRight .bottomRight ticTacToeBoard
                 ]
             ]
         , Html.text ("Winner: " ++ Debug.toString (winner ticTacToeBoard))
