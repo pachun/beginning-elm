@@ -12,7 +12,7 @@ import Html.Events exposing (onClick)
 
 main : Program () Board BrowserInteraction
 main =
-    Browser.sandbox { init = emptyBoard, update = updateBoard, view = board }
+    Browser.sandbox { init = emptyBoard, update = updateBoard, view = boardHtml }
 
 
 
@@ -61,43 +61,48 @@ type BrowserInteraction
 
 
 updateBoard : BrowserInteraction -> Board -> Board
-updateBoard browserInteraction ticTacToeBoard =
+updateBoard browserInteraction board =
     case browserInteraction of
         ClickedTopLeft ->
-            updateBoardSquare ticTacToeBoard.topLeft { ticTacToeBoard | topLeft = turn ticTacToeBoard } ticTacToeBoard
+            updateBoardSquare .topLeft { board | topLeft = board |> currentTurn |> boardSquareFromTurn } board
 
         ClickedTopMiddle ->
-            updateBoardSquare ticTacToeBoard.topMiddle { ticTacToeBoard | topMiddle = turn ticTacToeBoard } ticTacToeBoard
+            updateBoardSquare .topMiddle { board | topMiddle = board |> currentTurn |> boardSquareFromTurn } board
 
         ClickedTopRight ->
-            updateBoardSquare ticTacToeBoard.topRight { ticTacToeBoard | topRight = turn ticTacToeBoard } ticTacToeBoard
+            updateBoardSquare .topRight { board | topRight = board |> currentTurn |> boardSquareFromTurn } board
 
         ClickedMiddleLeft ->
-            updateBoardSquare ticTacToeBoard.middleLeft { ticTacToeBoard | middleLeft = turn ticTacToeBoard } ticTacToeBoard
+            updateBoardSquare .middleLeft { board | middleLeft = board |> currentTurn |> boardSquareFromTurn } board
 
         ClickedMiddle ->
-            updateBoardSquare ticTacToeBoard.middle { ticTacToeBoard | middle = turn ticTacToeBoard } ticTacToeBoard
+            updateBoardSquare .middle { board | middle = board |> currentTurn |> boardSquareFromTurn } board
 
         ClickedMiddleRight ->
-            updateBoardSquare ticTacToeBoard.middleRight { ticTacToeBoard | middleRight = turn ticTacToeBoard } ticTacToeBoard
+            updateBoardSquare .middleRight { board | middleRight = board |> currentTurn |> boardSquareFromTurn } board
 
         ClickedBottomLeft ->
-            updateBoardSquare ticTacToeBoard.bottomLeft { ticTacToeBoard | bottomLeft = turn ticTacToeBoard } ticTacToeBoard
+            updateBoardSquare .bottomLeft { board | bottomLeft = board |> currentTurn |> boardSquareFromTurn } board
 
         ClickedBottomMiddle ->
-            updateBoardSquare ticTacToeBoard.bottomMiddle { ticTacToeBoard | bottomMiddle = turn ticTacToeBoard } ticTacToeBoard
+            updateBoardSquare .bottomMiddle { board | bottomMiddle = board |> currentTurn |> boardSquareFromTurn } board
 
         ClickedBottomRight ->
-            updateBoardSquare ticTacToeBoard.bottomRight { ticTacToeBoard | bottomRight = turn ticTacToeBoard } ticTacToeBoard
+            updateBoardSquare .bottomRight { board | bottomRight = board |> currentTurn |> boardSquareFromTurn } board
 
         ClickedReset ->
             emptyBoard
 
 
-turn : Board -> BoardSquare
-turn ticTacToeBoard =
+type Turn
+    = XsTurn
+    | OsTurn
+
+
+currentTurn : Board -> Turn
+currentTurn ticTacToeBoard =
     let
-        boardSquareValues =
+        boardSquares =
             [ .topLeft ticTacToeBoard
             , .topMiddle ticTacToeBoard
             , .topRight ticTacToeBoard
@@ -110,12 +115,12 @@ turn ticTacToeBoard =
             ]
 
         numberOfXs =
-            boardSquareValues
+            boardSquares
                 |> List.filter ((==) X)
                 |> List.length
 
         numberOfOs =
-            boardSquareValues
+            boardSquares
                 |> List.filter ((==) O)
                 |> List.length
 
@@ -123,15 +128,25 @@ turn ticTacToeBoard =
             numberOfXs <= numberOfOs
     in
     if xsTurn then
-        X
+        XsTurn
 
     else
-        O
+        OsTurn
 
 
-updateBoardSquare : BoardSquare -> Board -> Board -> Board
-updateBoardSquare currentBoardSquare ticTacToeBoardWithChange ticTacToeBoardWithoutChange =
-    if winner ticTacToeBoardWithoutChange == Empty && currentBoardSquare == Empty then
+boardSquareFromTurn : Turn -> BoardSquare
+boardSquareFromTurn turn =
+    case turn of
+        XsTurn ->
+            X
+
+        OsTurn ->
+            O
+
+
+updateBoardSquare : (Board -> BoardSquare) -> Board -> Board -> Board
+updateBoardSquare boardSquareFromBoard ticTacToeBoardWithChange ticTacToeBoardWithoutChange =
+    if winner ticTacToeBoardWithoutChange == Empty && boardSquareFromBoard ticTacToeBoardWithoutChange == Empty then
         ticTacToeBoardWithChange
 
     else
@@ -274,26 +289,26 @@ boardSquareHtml action boardSquare ticTacToeBoard =
         ]
 
 
-board : Board -> Html BrowserInteraction
-board ticTacToeBoard =
+boardHtml : Board -> Html BrowserInteraction
+boardHtml board =
     Html.div []
         [ Html.table [ style "border" "1px solid #000", style "border-collapse" "collapse" ]
             [ Html.tr []
-                [ boardSquareHtml ClickedTopLeft .topLeft ticTacToeBoard
-                , boardSquareHtml ClickedTopMiddle .topMiddle ticTacToeBoard
-                , boardSquareHtml ClickedTopRight .topRight ticTacToeBoard
+                [ boardSquareHtml ClickedTopLeft .topLeft board
+                , boardSquareHtml ClickedTopMiddle .topMiddle board
+                , boardSquareHtml ClickedTopRight .topRight board
                 ]
             , Html.tr []
-                [ boardSquareHtml ClickedMiddleLeft .middleLeft ticTacToeBoard
-                , boardSquareHtml ClickedMiddle .middle ticTacToeBoard
-                , boardSquareHtml ClickedMiddleRight .middleRight ticTacToeBoard
+                [ boardSquareHtml ClickedMiddleLeft .middleLeft board
+                , boardSquareHtml ClickedMiddle .middle board
+                , boardSquareHtml ClickedMiddleRight .middleRight board
                 ]
             , Html.tr []
-                [ boardSquareHtml ClickedBottomLeft .bottomLeft ticTacToeBoard
-                , boardSquareHtml ClickedBottomMiddle .bottomMiddle ticTacToeBoard
-                , boardSquareHtml ClickedBottomRight .bottomRight ticTacToeBoard
+                [ boardSquareHtml ClickedBottomLeft .bottomLeft board
+                , boardSquareHtml ClickedBottomMiddle .bottomMiddle board
+                , boardSquareHtml ClickedBottomRight .bottomRight board
                 ]
             ]
-        , Html.text ("Winner: " ++ Debug.toString (winner ticTacToeBoard))
+        , Html.text ("Winner: " ++ Debug.toString (winner board))
         , Html.button [ onClick ClickedReset ] [ Html.text "Reset" ]
         ]
