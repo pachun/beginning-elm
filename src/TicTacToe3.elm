@@ -3,6 +3,7 @@ module TicTacToe3 exposing (main)
 import Array exposing (Array)
 import Browser
 import Html exposing (Html)
+import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 
 
@@ -12,7 +13,7 @@ import Html.Events exposing (onClick)
 
 main =
     Browser.sandbox
-        { init = emptyBoard 3
+        { init = initialBoard
         , update = updateBoard
         , view = boardHtml
         }
@@ -34,7 +35,15 @@ type alias Board =
 
 emptyBoard : Int -> Board
 emptyBoard boardSize =
-    Array.fromList [ Array.fromList [ X ] ]
+    Array.repeat boardSize (Array.repeat boardSize Empty)
+
+
+initialBoardSize =
+    3
+
+
+initialBoard =
+    emptyBoard initialBoardSize
 
 
 
@@ -60,4 +69,7 @@ updateBoard browserInteraction board =
 
 boardHtml : Board -> Html BrowserInteraction
 boardHtml board =
-    Html.div [] []
+    Html.div []
+        [ Html.table [ style "border" "1px solid #000", style "border-collapse" "collapse" ]
+            (Array.toList (Array.map (\boardRow -> Html.tr [] (Array.toList (Array.map (\boardCell -> Html.td [] []) boardRow))) board))
+        ]
