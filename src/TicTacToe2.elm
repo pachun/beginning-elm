@@ -10,6 +10,7 @@ import Html.Events exposing (onClick)
 -- MAIN
 
 
+main : Program () TicTacToeBoard Action
 main =
     Browser.sandbox { init = emptyTicTacToeBoard, update = update, view = view }
 
@@ -37,6 +38,7 @@ type alias TicTacToeBoard =
     }
 
 
+emptyTicTacToeBoard : TicTacToeBoard
 emptyTicTacToeBoard =
     TicTacToeBoard Empty Empty Empty Empty Empty Empty Empty Empty Empty
 
@@ -205,13 +207,14 @@ update turnAction ticTacToeBoard =
                 ticTacToeBoard
 
         ClickedReset ->
-            init
+            emptyTicTacToeBoard
 
 
 type alias Winner =
     BoardSquareValue
 
 
+winner : TicTacToeBoard -> BoardSquareValue
 winner ticTacToeBoard =
     let
         topRowWinner =
@@ -323,6 +326,7 @@ boardSquareValue value =
             ""
 
 
+view : TicTacToeBoard -> Html Action
 view ticTacToeBoard =
     Html.div []
         [ Html.table [ style "border" "1px solid #000", style "border-collapse" "collapse" ]
