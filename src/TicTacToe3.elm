@@ -42,7 +42,7 @@ emptyBoard boardSize =
 
 initialBoardSize : Int
 initialBoardSize =
-    5
+    4
 
 
 initialBoard : Board
@@ -67,21 +67,25 @@ updateBoard : BrowserInteraction -> Board -> Board
 updateBoard browserInteraction board =
     case browserInteraction of
         Clicked ( row, col ) ->
-            case Array.get row board of
-                Just boardRow ->
-                    case Array.get col boardRow of
-                        Just boardSquareValue ->
-                            if boardSquareValue == Empty then
-                                Array.set row (Array.set col (nextTurn board) boardRow) board
+            if winner board == Empty then
+                case Array.get row board of
+                    Just boardRow ->
+                        case Array.get col boardRow of
+                            Just boardSquareValue ->
+                                if boardSquareValue == Empty then
+                                    Array.set row (Array.set col (nextTurn board) boardRow) board
 
-                            else
+                                else
+                                    board
+
+                            Nothing ->
                                 board
 
-                        Nothing ->
-                            board
+                    Nothing ->
+                        board
 
-                Nothing ->
-                    board
+            else
+                board
 
         ClickedReset ->
             initialBoard
