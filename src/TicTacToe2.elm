@@ -157,96 +157,36 @@ type alias Winner =
     BoardSquare
 
 
+isWinningRow : (Board -> BoardSquare) -> (Board -> BoardSquare) -> (Board -> BoardSquare) -> Board -> Bool
+isWinningRow square1 square2 square3 board =
+    square1 board /= Empty && square1 board == square2 board && square2 board == square3 board
+
+
 winner : Board -> Winner
-winner ticTacToeBoard =
-    let
-        hasTopRowWinner =
-            ticTacToeBoard.topLeft
-                /= Empty
-                && ticTacToeBoard.topLeft
-                == ticTacToeBoard.topMiddle
-                && ticTacToeBoard.topMiddle
-                == ticTacToeBoard.topRight
+winner board =
+    if board |> isWinningRow .topLeft .topMiddle .topRight then
+        board.topLeft
 
-        hasMiddleRowWinner =
-            ticTacToeBoard.middleLeft
-                /= Empty
-                && ticTacToeBoard.middleLeft
-                == ticTacToeBoard.middle
-                && ticTacToeBoard.middle
-                == ticTacToeBoard.middleRight
+    else if board |> isWinningRow .middleLeft .middle .middleRight then
+        board.middleLeft
 
-        hasBottomRowWinner =
-            ticTacToeBoard.bottomLeft
-                /= Empty
-                && ticTacToeBoard.bottomLeft
-                == ticTacToeBoard.bottomMiddle
-                && ticTacToeBoard.bottomMiddle
-                == ticTacToeBoard.bottomRight
+    else if board |> isWinningRow .bottomLeft .bottomMiddle .bottomRight then
+        board.bottomLeft
 
-        hasLeftColumnWinner =
-            ticTacToeBoard.topLeft
-                /= Empty
-                && ticTacToeBoard.topLeft
-                == ticTacToeBoard.middleLeft
-                && ticTacToeBoard.middleLeft
-                == ticTacToeBoard.bottomLeft
+    else if board |> isWinningRow .topLeft .middleLeft .bottomLeft then
+        board.topLeft
 
-        hasMiddleColumnWinner =
-            ticTacToeBoard.topMiddle
-                /= Empty
-                && ticTacToeBoard.topMiddle
-                == ticTacToeBoard.middle
-                && ticTacToeBoard.middle
-                == ticTacToeBoard.bottomMiddle
+    else if board |> isWinningRow .topMiddle .middle .bottomMiddle then
+        board.topMiddle
 
-        hasRightColumnWinner =
-            ticTacToeBoard.topRight
-                /= Empty
-                && ticTacToeBoard.topRight
-                == ticTacToeBoard.middleRight
-                && ticTacToeBoard.middleRight
-                == ticTacToeBoard.bottomRight
+    else if board |> isWinningRow .topRight .middleRight .bottomRight then
+        board.topRight
 
-        hasForwardSlashWinner =
-            ticTacToeBoard.bottomLeft
-                /= Empty
-                && ticTacToeBoard.bottomLeft
-                == ticTacToeBoard.middle
-                && ticTacToeBoard.middle
-                == ticTacToeBoard.topRight
+    else if board |> isWinningRow .bottomLeft .middle .topRight then
+        board.bottomLeft
 
-        hasBackSlashWinner =
-            ticTacToeBoard.topLeft
-                /= Empty
-                && ticTacToeBoard.topLeft
-                == ticTacToeBoard.middle
-                && ticTacToeBoard.middle
-                == ticTacToeBoard.bottomRight
-    in
-    if hasTopRowWinner then
-        ticTacToeBoard.topLeft
-
-    else if hasMiddleRowWinner then
-        ticTacToeBoard.middleLeft
-
-    else if hasBottomRowWinner then
-        ticTacToeBoard.bottomLeft
-
-    else if hasLeftColumnWinner then
-        ticTacToeBoard.topLeft
-
-    else if hasMiddleColumnWinner then
-        ticTacToeBoard.topMiddle
-
-    else if hasRightColumnWinner then
-        ticTacToeBoard.topRight
-
-    else if hasForwardSlashWinner then
-        ticTacToeBoard.bottomLeft
-
-    else if hasBackSlashWinner then
-        ticTacToeBoard.topLeft
+    else if board |> isWinningRow .topLeft .middle .bottomRight then
+        board.topLeft
 
     else
         Empty
