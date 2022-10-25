@@ -141,7 +141,7 @@ update turnAction ticTacToeBoard =
 winner : TicTacToeBoard -> BoardSquareValue
 winner ticTacToeBoard =
     let
-        topRowWinner =
+        hasTopRowWinner =
             ticTacToeBoard.topLeft
                 /= Empty
                 && ticTacToeBoard.topLeft
@@ -149,7 +149,7 @@ winner ticTacToeBoard =
                 && ticTacToeBoard.topMiddle
                 == ticTacToeBoard.topRight
 
-        middleRowWinner =
+        hasMiddleRowWinner =
             ticTacToeBoard.middleLeft
                 /= Empty
                 && ticTacToeBoard.middleLeft
@@ -157,7 +157,7 @@ winner ticTacToeBoard =
                 && ticTacToeBoard.middle
                 == ticTacToeBoard.middleRight
 
-        bottomRowWinner =
+        hasBottomRowWinner =
             ticTacToeBoard.bottomLeft
                 /= Empty
                 && ticTacToeBoard.bottomLeft
@@ -165,7 +165,7 @@ winner ticTacToeBoard =
                 && ticTacToeBoard.bottomMiddle
                 == ticTacToeBoard.bottomRight
 
-        leftColumnWinner =
+        hasLeftColumnWinner =
             ticTacToeBoard.topLeft
                 /= Empty
                 && ticTacToeBoard.topLeft
@@ -173,7 +173,7 @@ winner ticTacToeBoard =
                 && ticTacToeBoard.middleLeft
                 == ticTacToeBoard.bottomLeft
 
-        middleColumnWinner =
+        hasMiddleColumnWinner =
             ticTacToeBoard.topMiddle
                 /= Empty
                 && ticTacToeBoard.topMiddle
@@ -181,7 +181,7 @@ winner ticTacToeBoard =
                 && ticTacToeBoard.middle
                 == ticTacToeBoard.bottomMiddle
 
-        rightColumnWinner =
+        hasRightColumnWinner =
             ticTacToeBoard.topRight
                 /= Empty
                 && ticTacToeBoard.topRight
@@ -189,7 +189,7 @@ winner ticTacToeBoard =
                 && ticTacToeBoard.middleRight
                 == ticTacToeBoard.bottomRight
 
-        forwardSlashWinner =
+        hasForwardSlashWinner =
             ticTacToeBoard.bottomLeft
                 /= Empty
                 && ticTacToeBoard.bottomLeft
@@ -197,7 +197,7 @@ winner ticTacToeBoard =
                 && ticTacToeBoard.middle
                 == ticTacToeBoard.topRight
 
-        backSlashWinner =
+        hasBackSlashWinner =
             ticTacToeBoard.topLeft
                 /= Empty
                 && ticTacToeBoard.topLeft
@@ -205,28 +205,28 @@ winner ticTacToeBoard =
                 && ticTacToeBoard.middle
                 == ticTacToeBoard.bottomRight
     in
-    if topRowWinner then
+    if hasTopRowWinner then
         ticTacToeBoard.topLeft
 
-    else if middleRowWinner then
+    else if hasMiddleRowWinner then
         ticTacToeBoard.middleLeft
 
-    else if bottomRowWinner then
+    else if hasBottomRowWinner then
         ticTacToeBoard.bottomLeft
 
-    else if leftColumnWinner then
+    else if hasLeftColumnWinner then
         ticTacToeBoard.topLeft
 
-    else if middleColumnWinner then
+    else if hasMiddleColumnWinner then
         ticTacToeBoard.topMiddle
 
-    else if rightColumnWinner then
+    else if hasRightColumnWinner then
         ticTacToeBoard.topRight
 
-    else if forwardSlashWinner then
+    else if hasForwardSlashWinner then
         ticTacToeBoard.bottomLeft
 
-    else if backSlashWinner then
+    else if hasBackSlashWinner then
         ticTacToeBoard.topLeft
 
     else
