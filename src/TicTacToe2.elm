@@ -11,7 +11,7 @@ import Html.Events exposing (onClick)
 
 
 main =
-    Browser.sandbox { init = init, update = update, view = view }
+    Browser.sandbox { init = emptyTicTacToeBoard, update = update, view = view }
 
 
 
@@ -37,8 +37,7 @@ type alias TicTacToeBoard =
     }
 
 
-init : TicTacToeBoard
-init =
+emptyTicTacToeBoard =
     TicTacToeBoard Empty Empty Empty Empty Empty Empty Empty Empty Empty
 
 
