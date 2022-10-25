@@ -1,4 +1,4 @@
-module TicTacToe2 exposing (..)
+module TicTacToe2 exposing (main)
 
 import Browser
 import Html exposing (..)
@@ -208,10 +208,6 @@ update turnAction ticTacToeBoard =
 
         ClickedReset ->
             emptyTicTacToeBoard
-
-
-type alias Winner =
-    BoardSquareValue
 
 
 winner : TicTacToeBoard -> BoardSquareValue
