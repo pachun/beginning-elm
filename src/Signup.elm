@@ -19,7 +19,7 @@ initialModel =
     User "" "" "" False
 
 
-view : User -> Html.Styled.Html msg
+view : User -> Html msg
 view user =
     div []
         [ h1 [ css [ paddingLeft (cm 3) ] ] [ Html.Styled.text "Sign up" ]
