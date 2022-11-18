@@ -25,8 +25,7 @@ type alias Model =
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick SendHttpRequest ] [ text "Get Data From Server" ]
-        , postsOrErrorMessage model
+        [ postsOrErrorMessage model
         ]
 
 
@@ -47,7 +46,8 @@ postsOrErrorMessage model =
 
         RemoteData.Success posts ->
             div []
-                [ h1 [] [ text "Posts" ]
+                [ button [ onClick GetPosts ] [ text "Refresh Posts" ]
+                , h1 [] [ text "Posts" ]
                 , table []
                     ([ tr []
                         [ th [] [ text "ID" ]
@@ -70,17 +70,17 @@ tablePost post =
 
 
 type Msg
-    = SendHttpRequest
-    | DataReceived (WebData (List Post))
+    = GetPosts
+    | GotPosts (WebData (List Post))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SendHttpRequest ->
+        GetPosts ->
             ( { model | posts = RemoteData.Loading }, getPosts )
 
-        DataReceived respose ->
+        GotPosts respose ->
             ( { model | posts = respose }, Cmd.none )
 
 
@@ -90,7 +90,7 @@ getPosts =
         { url = "http://localhost:5019/posts"
         , expect =
             Http.expectJson
-                (RemoteData.fromResult >> DataReceived)
+                (RemoteData.fromResult >> GotPosts)
                 (list postDecoder)
         }
 
@@ -125,7 +125,7 @@ buildErrorMessage httpError =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { posts = RemoteData.NotAsked }, Cmd.none )
+    ( { posts = RemoteData.Loading }, getPosts )
 
 
 main : Program () Model Msg
