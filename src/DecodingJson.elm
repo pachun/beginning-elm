@@ -6,7 +6,7 @@ import Html.Attributes exposing (href)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode exposing (Decoder, int, list, string)
-import Json.Decode.Pipeline exposing (required, requiredAt)
+import Json.Decode.Pipeline exposing (required)
 
 
 type alias Post =
@@ -93,8 +93,8 @@ postDecoder =
     Decode.succeed Post
         |> required "id" int
         |> required "title" string
-        |> requiredAt [ "author", "name" ] string
-        |> requiredAt [ "author", "url" ] string
+        |> required "authorName" string
+        |> required "authorUrl" string
 
 
 buildErrorMessage : Http.Error -> String
