@@ -3,7 +3,7 @@ module Signup exposing (User)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (..)
-import VirtualDom exposing (..)
+import VirtualDom
 
 
 type alias User =
@@ -16,35 +16,39 @@ type alias User =
 
 initialModel : User
 initialModel =
-    User "" "" "" False
+    { name = ""
+    , email = ""
+    , password = ""
+    , loggedIn = False
+    }
 
 
 view : User -> Html msg
 view user =
     div []
-        [ h1 [ css [ paddingLeft (cm 3) ] ] [ Html.Styled.text "Sign up" ]
+        [ h1 [ css [ paddingLeft (cm 3) ] ] [ text "Sign up" ]
         , styledForm []
             [ div []
-                [ Html.Styled.text "Name"
+                [ text "Name"
                 , styledInput [ id "name", type_ "text" ] []
                 ]
             , div []
-                [ Html.Styled.text "Email"
+                [ text "Email"
                 , styledInput [ id "email", type_ "email" ] []
                 ]
             , div []
-                [ Html.Styled.text "Password"
+                [ text "Password"
                 , styledInput [ id "password", type_ "password" ] []
                 ]
             , div []
                 [ styledButton [ type_ "submit" ]
-                    [ Html.Styled.text "Create my account" ]
+                    [ text "Create my account" ]
                 ]
             ]
         ]
 
 
-styledForm : List (Html.Styled.Attribute msg) -> List (Html msg) -> Html msg
+styledForm : List (Attribute msg) -> List (Html msg) -> Html msg
 styledForm =
     styled Html.Styled.form
         [ borderRadius (px 5)
@@ -54,7 +58,7 @@ styledForm =
         ]
 
 
-styledInput : List (Html.Styled.Attribute msg) -> List (Html msg) -> Html msg
+styledInput : List (Attribute msg) -> List (Html msg) -> Html msg
 styledInput =
     styled Html.Styled.input
         [ display block
@@ -66,7 +70,7 @@ styledInput =
         ]
 
 
-styledButton : List (Html.Styled.Attribute msg) -> List (Html msg) -> Html msg
+styledButton : List (Attribute msg) -> List (Html msg) -> Html msg
 styledButton =
     styled Html.Styled.button
         [ Css.width (px 300)
@@ -78,6 +82,13 @@ styledButton =
         , borderRadius (px 4)
         , fontSize (px 16)
         ]
+
+
+type Msg
+    = SaveName String
+    | SaveEmail String
+    | SavePassword String
+    | Signup
 
 
 main : VirtualDom.Node msg
