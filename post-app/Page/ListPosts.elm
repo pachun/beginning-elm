@@ -42,8 +42,8 @@ update msg model =
         GetPosts ->
             ( { model | posts = RemoteData.Loading }, getPosts )
 
-        GotPosts respose ->
-            ( { model | posts = respose }, Cmd.none )
+        GotPosts response ->
+            ( { model | posts = response }, Cmd.none )
 
 
 
@@ -87,6 +87,7 @@ tablePost post =
         [ td [] [ text (Post.idToString post.id) ]
         , td [] [ text post.title ]
         , td [] [ a [ href post.authorUrl ] [ text post.authorName ] ]
+        , td [] [ a [ href ("/posts/" ++ Post.idToString post.id) ] [ text "Edit" ] ]
         ]
 
 

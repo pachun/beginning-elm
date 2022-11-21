@@ -1,8 +1,10 @@
-module Post exposing (Post, PostId, idToString, postDecoder, postsDecoder)
+module Post exposing (Post, PostId, idParser, idToString, postDecoder, postEncoder, postsDecoder)
 
 import Html exposing (..)
 import Json.Decode as Decode exposing (Decoder, int, list, string)
 import Json.Decode.Pipeline exposing (required)
+import Json.Encode as Encode
+import Url.Parser exposing (Parser, custom)
 
 
 type PostId
@@ -34,3 +36,30 @@ postsDecoder =
 idToString : PostId -> String
 idToString (PostId postId) =
     String.fromInt postId
+
+
+idParser : Parser (PostId -> a) a
+idParser =
+    custom "Post ID" <|
+        \postId ->
+            case String.toInt postId of
+                Just postIdAsInt ->
+                    Just (PostId postIdAsInt)
+
+                Nothing ->
+                    Nothing
+
+
+postEncoder : Post -> Encode.Value
+postEncoder post =
+    Encode.object
+        [ ( "id", encodeId post.id )
+        , ( "title", Encode.string post.title )
+        , ( "authorName", Encode.string post.authorName )
+        , ( "authorUrl", Encode.string post.authorUrl )
+        ]
+
+
+encodeId : PostId -> Encode.Value
+encodeId (PostId postId) =
+    Encode.int postId
