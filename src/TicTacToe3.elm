@@ -3,8 +3,8 @@ module TicTacToe3 exposing (main)
 import Array exposing (Array)
 import Browser
 import Html exposing (Html)
-import Html.Attributes exposing (style)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (disabled, style, type_, value)
+import Html.Events exposing (onClick, onInput)
 import List.Extra
 
 
@@ -61,6 +61,7 @@ type alias BoardSquarePosition =
 type BrowserInteraction
     = Clicked BoardSquarePosition
     | ClickedReset
+    | ClickedUpdateBoardSize String
 
 
 updateBoard : BrowserInteraction -> Board -> Board
@@ -88,7 +89,15 @@ updateBoard browserInteraction board =
                 board
 
         ClickedReset ->
-            initialBoard
+            emptyBoard (Array.length board)
+
+        ClickedUpdateBoardSize boardSize ->
+            case String.toInt boardSize of
+                Just boardSizeAsInt ->
+                    emptyBoard boardSizeAsInt
+
+                Nothing ->
+                    emptyBoard 0
 
 
 boardAsLists : Board -> List (List BoardSquareValue)
@@ -127,6 +136,9 @@ nextTurn board =
 winner : Board -> BoardSquareValue
 winner board =
     let
+        currentBoardSize =
+            Array.length board
+
         listBoard =
             boardAsLists board
 
@@ -143,7 +155,10 @@ winner board =
             listBoard
                 |> List.concat
                 |> List.indexedMap Tuple.pair
-                |> List.filter (\listItemWithIndex -> remainderBy (initialBoardSize + 1) (Tuple.first listItemWithIndex) == 0)
+                |> List.filter
+                    (\listItemWithIndex ->
+                        remainderBy (currentBoardSize + 1) (Tuple.first listItemWithIndex) == 0
+                    )
                 |> List.map Tuple.second
                 |> List.all ((==) boardSquareValue)
 
@@ -151,7 +166,13 @@ winner board =
             listBoard
                 |> List.concat
                 |> List.indexedMap Tuple.pair
-                |> List.filter (\listItemWithIndex -> remainderBy (initialBoardSize - 1) (Tuple.first listItemWithIndex) == 0 && (Tuple.first listItemWithIndex /= 0) && (Tuple.first listItemWithIndex /= initialBoardSize ^ 2 - 1))
+                |> List.filter
+                    (\listItemWithIndex ->
+                        remainderBy (currentBoardSize - 1) (Tuple.first listItemWithIndex)
+                            == 0
+                            && (Tuple.first listItemWithIndex /= 0)
+                            && (Tuple.first listItemWithIndex /= currentBoardSize ^ 2 - 1)
+                    )
                 |> List.map Tuple.second
                 |> List.all ((==) boardSquareValue)
 
@@ -211,7 +232,16 @@ boardSquareHtml boardRowIndex boardColumnIndex boardSquareValue =
 boardHtml : Board -> Html BrowserInteraction
 boardHtml board =
     Html.div []
-        [ Html.table [ style "border" "1px solid #000", style "border-collapse" "collapse" ]
+        [ Html.text "Board Size"
+        , Html.input
+            [ type_ "text"
+            , value (String.fromInt (Array.length board))
+            , disabled (not (boardIsEmpty board))
+            , onInput ClickedUpdateBoardSize
+            ]
+            []
+        , Html.table
+            [ style "border" "1px solid #000", style "border-collapse" "collapse" ]
             (Array.toList
                 (Array.indexedMap
                     (\boardRowIndex boardRow ->
@@ -228,6 +258,37 @@ boardHtml board =
                     board
                 )
             )
-        , Html.text ("Winner: " ++ Debug.toString (winner board))
-        , Html.button [ onClick ClickedReset ] [ Html.text "Reset" ]
+        , Html.text ("Winner: " ++ viewWinner (winner board))
+        , newGameButton board
         ]
+
+
+newGameButton : Board -> Html BrowserInteraction
+newGameButton board =
+    if boardIsEmpty board then
+        Html.text ""
+
+    else
+        Html.button [ onClick ClickedReset ] [ Html.text "New Game" ]
+
+
+viewWinner : BoardSquareValue -> String
+viewWinner boardSquareValue =
+    case boardSquareValue of
+        X ->
+            "X"
+
+        O ->
+            "O"
+
+        Empty ->
+            "None"
+
+
+boardIsEmpty : Board -> Bool
+boardIsEmpty board =
+    let
+        boardList =
+            List.map Array.toList (Array.toList board)
+    in
+    List.all ((==) True) (List.map (\row -> List.all ((==) Empty) row) boardList)
