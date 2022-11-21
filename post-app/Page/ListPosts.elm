@@ -20,8 +20,8 @@ type Msg
     | GotPosts (WebData (List Post))
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
+init : ( Model, Cmd Msg )
+init =
     ( { posts = RemoteData.Loading }, getPosts )
 
 
@@ -52,13 +52,6 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ postsOrErrorMessage model
-        ]
-
-
-postsOrErrorMessage : Model -> Html Msg
-postsOrErrorMessage model =
     case model.posts of
         RemoteData.NotAsked ->
             text ""
