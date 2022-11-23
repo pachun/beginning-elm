@@ -1,0 +1,5 @@
+#!/bin/bash
+
+elm-live post-app/Main.elm --pushstate -- --debug
+
+json-server -p 5019 -w -d 1000 server/db.json

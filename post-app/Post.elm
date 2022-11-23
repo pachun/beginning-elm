@@ -1,4 +1,4 @@
-module Post exposing (Post, PostId, idParser, idToString, postDecoder, postEncoder, postsDecoder)
+module Post exposing (Post, PostId, idParser, idToString, newPostEncoder, postDecoder, postEncoder, postsDecoder)
 
 import Html exposing (..)
 import Json.Decode as Decode exposing (Decoder, int, list, string)
@@ -57,6 +57,15 @@ postEncoder post =
         , ( "title", Encode.string post.title )
         , ( "authorName", Encode.string post.authorName )
         , ( "authorUrl", Encode.string post.authorUrl )
+        ]
+
+
+newPostEncoder : String -> String -> String -> Encode.Value
+newPostEncoder title authorName authorUrl =
+    Encode.object
+        [ ( "title", Encode.string title )
+        , ( "authorName", Encode.string authorName )
+        , ( "authorUrl", Encode.string authorUrl )
         ]
 
 

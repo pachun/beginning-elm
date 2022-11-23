@@ -5,6 +5,7 @@ import Browser.Navigation as Nav
 import Html exposing (..)
 import Page.EditPost as EditPost
 import Page.ListPosts as ListPosts
+import Page.NewPost as NewPost
 import Route exposing (Route)
 import Url exposing (Url)
 
@@ -32,6 +33,7 @@ type Page
     = NotFoundPage
     | ListPage ListPosts.Model
     | EditPage EditPost.Model
+    | NewPage NewPost.Model
 
 
 type Msg
@@ -39,6 +41,7 @@ type Msg
     | LinkClicked UrlRequest
     | UrlChanged Url
     | EditPageMsg EditPost.Msg
+    | NewPageMsg NewPost.Msg
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -74,6 +77,13 @@ initCurrentPage ( model, existingCmds ) =
                             EditPost.init postId model.navKey
                     in
                     ( EditPage pageModel, Cmd.map EditPageMsg pageCmds )
+
+                Route.NewPost ->
+                    let
+                        ( pageModel, pageCmds ) =
+                            NewPost.init model.navKey
+                    in
+                    ( NewPage pageModel, Cmd.map NewPageMsg pageCmds )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -100,6 +110,10 @@ currentView model =
         EditPage pageModel ->
             EditPost.view pageModel
                 |> Html.map EditPageMsg
+
+        NewPage pageModel ->
+            NewPost.view pageModel
+                |> Html.map NewPageMsg
 
 
 notFoundView : Html msg
@@ -145,6 +159,15 @@ update msg model =
             in
             ( { model | page = EditPage updatedPageModel }
             , Cmd.map EditPageMsg updatedCmd
+            )
+
+        ( NewPageMsg subMsg, NewPage pageModel ) ->
+            let
+                ( updatedPageModel, updatedCmd ) =
+                    NewPost.update subMsg pageModel
+            in
+            ( { model | page = NewPage updatedPageModel }
+            , Cmd.map NewPageMsg updatedCmd
             )
 
         ( _, _ ) ->
